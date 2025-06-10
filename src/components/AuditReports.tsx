@@ -1,8 +1,8 @@
-
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { FileText, Download, Calendar, CheckCircle, AlertTriangle } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FileText, Download, Calendar, CheckCircle, AlertTriangle, TrendingUp, BarChart3 } from "lucide-react";
 
 const reports = [
   {
@@ -46,6 +46,34 @@ const reports = [
       low: 67
     },
     description: "Analyse technique approfondie de l'infrastructure réseau"
+  },
+  {
+    id: "4",
+    title: "Rapport Test d'Intrusion",
+    date: "2024-05-20",
+    type: "Pentest",
+    status: "Généré",
+    findings: {
+      critical: 3,
+      high: 7,
+      medium: 12,
+      low: 18
+    },
+    description: "Résultats des tests d'intrusion sur l'infrastructure critique"
+  },
+  {
+    id: "5",
+    title: "Analyse de Configurations",
+    date: "2024-05-15",
+    type: "Configuration",
+    status: "Généré",
+    findings: {
+      critical: 1,
+      high: 4,
+      medium: 9,
+      low: 25
+    },
+    description: "Évaluation des configurations de sécurité système"
   }
 ];
 
@@ -81,6 +109,23 @@ export const AuditReports = () => {
     }
   };
 
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case "Complet":
+        return "bg-blue-600";
+      case "Conformité":
+        return "bg-purple-600";
+      case "Technique":
+        return "bg-green-600";
+      case "Pentest":
+        return "bg-red-600";
+      case "Configuration":
+        return "bg-orange-600";
+      default:
+        return "bg-gray-600";
+    }
+  };
+
   return (
     <div className="space-y-6">
       <Card className="bg-slate-800 border-slate-700 p-6">
@@ -89,9 +134,23 @@ export const AuditReports = () => {
             <FileText className="h-6 w-6 text-green-400" />
             <h2 className="text-2xl font-bold text-white">Rapports d'Audit</h2>
           </div>
-          <Button className="bg-green-600 hover:bg-green-700">
-            Générer Nouveau Rapport
-          </Button>
+          <div className="flex space-x-2">
+            <Select>
+              <SelectTrigger className="w-48 bg-slate-700 border-slate-600 text-white">
+                <SelectValue placeholder="Type de rapport" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="complete">Rapport Complet</SelectItem>
+                <SelectItem value="compliance">Conformité</SelectItem>
+                <SelectItem value="vulnerability">Vulnérabilités</SelectItem>
+                <SelectItem value="pentest">Test d'Intrusion</SelectItem>
+                <SelectItem value="configuration">Configuration</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button className="bg-green-600 hover:bg-green-700">
+              Générer Nouveau Rapport
+            </Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
@@ -131,12 +190,33 @@ export const AuditReports = () => {
                 <span>Score de sécurité moyen</span>
                 <span className="text-blue-400 font-medium">8.5/10</span>
               </div>
+              <div className="flex justify-between items-center">
+                <span>Tests d'intrusion réussis</span>
+                <span className="text-yellow-400 font-medium">76%</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span>Conformité moyenne</span>
+                <span className="text-purple-400 font-medium">82.5%</span>
+              </div>
             </div>
           </Card>
         </div>
 
         <div className="space-y-4">
-          <h3 className="text-xl font-semibold text-white">Rapports Récents</h3>
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-semibold text-white">Rapports Récents</h3>
+            <div className="flex space-x-2">
+              <Button size="sm" variant="outline" className="border-slate-600">
+                <BarChart3 className="h-4 w-4 mr-1" />
+                Exporter Données
+              </Button>
+              <Button size="sm" variant="outline" className="border-slate-600">
+                <TrendingUp className="h-4 w-4 mr-1" />
+                Analyse Tendances
+              </Button>
+            </div>
+          </div>
+          
           {reports.map((report) => (
             <Card key={report.id} className="bg-slate-700 border-slate-600 p-4">
               <div className="flex items-start justify-between">
@@ -144,7 +224,7 @@ export const AuditReports = () => {
                   <div className="flex items-center space-x-3 mb-2">
                     {getStatusIcon(report.status)}
                     <h4 className="text-white font-medium">{report.title}</h4>
-                    <Badge variant="outline" className="border-slate-500 text-slate-300">
+                    <Badge className={getTypeColor(report.type)}>
                       {report.type}
                     </Badge>
                   </div>
@@ -180,6 +260,10 @@ export const AuditReports = () => {
                   <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
                     <Download className="h-4 w-4 mr-1" />
                     PDF
+                  </Button>
+                  <Button size="sm" className="bg-green-600 hover:bg-green-700">
+                    <Download className="h-4 w-4 mr-1" />
+                    Excel
                   </Button>
                 </div>
               </div>
